@@ -19,7 +19,7 @@ public class Server : MonoBehaviour
     {
         DontDestroyOnLoad(gameObject);
         StartCoroutine(StartServer());
-        //StartCoroutine(ApproveBackfillTicketEverySecond());
+        StartCoroutine(ApproveBackfillTicketEverySecond());
     }
 
     async Awaitable StartServer()
@@ -54,7 +54,7 @@ public class Server : MonoBehaviour
 
         // We must then subscribe.
         var events = await MultiplayService.Instance.SubscribeToServerEventsAsync(callbacks);
-        //await CreateBackfillTicket();
+        await CreateBackfillTicket();
     }
 
     void OnSubscriptionStateChanged(MultiplayServerSubscriptionState obj)

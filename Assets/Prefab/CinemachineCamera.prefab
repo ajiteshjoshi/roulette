@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 6526674836627965882}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.4442015, z: -0, w: 0.8959269}
-  m_LocalPosition: {x: 4.405574, y: 1.437654, z: -1.3754027}
+  m_LocalPosition: {x: -1.1944258, y: 7.637653, z: 1.1245973}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -51,7 +51,7 @@ MonoBehaviour:
     m_Value: 0
   OutputChannel: 1
   StandbyUpdate: 2
-  m_StreamingVersion: 20241001
+  m_StreamingVersion: 20230301
   m_LegacyPriority: 0
   Target:
     TrackingTarget: {fileID: 0}
@@ -89,13 +89,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b617507da6d07e749b7efdb34e1173e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  FollowOffset: {x: -0.56, y: 0.62, z: 0.25}
   TrackerSettings:
     BindingMode: 4
     PositionDamping: {x: 0, y: 0, z: 0}
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
-  FollowOffset: {x: -0.56, y: 0.62, z: 0.25}
 --- !u!114 &455270282679476495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105,7 +105,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 6526674836627965882}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4afa82ae3200b82408d605c3dbdd1e38, type: 3}
+  m_Script: {fileID: 11500000, guid: 083a1aefe8599774dbcee09145bea4ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damping: 0
