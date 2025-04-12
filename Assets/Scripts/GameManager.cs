@@ -111,7 +111,8 @@ public class GameManager : NetworkBehaviour
     {
 
         Debug.Log($"Player {playerId} has been eliminated.");
-        if(NetworkManager.LocalClientId == playerId)
+        Debug.Log($"Local Id {NetworkManager.Singleton.LocalClientId} Player Id");
+        if(NetworkManager.Singleton.LocalClientId == playerId)
         {
             DeadImage.gameObject.SetActive(true);
         }

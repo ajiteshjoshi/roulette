@@ -67,10 +67,12 @@ public class PlayerManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void PullTriggerServerRpc()
+    private void PullTriggerServerRpc(ServerRpcParams rpcParams = default)
     {
         Debug.Log("Trigger Pulled");
+
+        var clientId = rpcParams.Receive.SenderClientId;
         bool bulletFired = Revolver.Instance.PullTrigger();
-        GameManager.Instance.EndTurn(bulletFired, playerId);
+        GameManager.Instance.EndTurn(bulletFired, clientId);
     }
 }
