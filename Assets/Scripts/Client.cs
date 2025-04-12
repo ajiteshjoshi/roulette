@@ -23,6 +23,11 @@ public class Client : MonoBehaviour
             initialized = true;
         }
 
+       
+    }
+
+    public  async void StartMatch()
+    {
         await StartSearch();
     }
 

@@ -3,11 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
+using TMPro;
+using UnityEngine.SceneManagement;
 public class PlayFabManager : MonoBehaviour
 {
 
     public static PlayFabManager Instance;
 
+    private string playFabId;
+
+    public TMP_InputField emailInput;
+    public TMP_InputField passwordInput;
+
+    private string email;
+    private string password;
     private void Awake()
     {
         Instance = this;
@@ -15,6 +24,14 @@ public class PlayFabManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        if(PlayerPrefs.GetString("Email") != null)
+        {
+            email = PlayerPrefs.GetString("Email");
+            password = PlayerPrefs.GetString("Password");
+
+            LoginWithEmail(email, password);
+        }
         Login();
     }
 
@@ -50,6 +67,15 @@ public class PlayFabManager : MonoBehaviour
         PlayFabClientAPI.LoginWithCustomID(request, OnSuccess, OnError);
     }
 
+
+    void LoginButton()
+    {
+        email = emailInput.text;
+        password = passwordInput.text;
+
+        LoginWithEmail(email,password);
+
+    }
     void LoginWithEmail(string email,string password)
     {
         var request = new LoginWithEmailAddressRequest
@@ -78,6 +104,9 @@ public class PlayFabManager : MonoBehaviour
     }
     void OnSuccess(LoginResult result)
     {
+        playFabId = result.PlayFabId;
+        Debug.Log("PlayfabId " + playFabId);
+        SceneManager.LoadScene("StartUp");
         GetMoneyInAccount();
     }
 
