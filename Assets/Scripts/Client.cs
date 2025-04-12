@@ -13,6 +13,7 @@ public class Client : MonoBehaviour
 {
     static bool initialized;
 
+    public TextMeshProUGUI statusText;
     async void Start()
     {
         if (!initialized)
@@ -21,16 +22,17 @@ public class Client : MonoBehaviour
             AuthenticationService.Instance.SwitchProfile(UnityEngine.Random.Range(0, 1000000).ToString());
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
             initialized = true;
+            await StartSearch();
         }
+        
 
+    }
+
+   /* public  async void StartMatch()
+    {
        
     }
-
-    public  async void StartMatch()
-    {
-        await StartSearch();
-    }
-
+*/
     async Task StartSearch()
     {
         var players = new List<Player>
@@ -59,7 +61,7 @@ public class Client : MonoBehaviour
             if (ticketStatusResponse?.Value is MultiplayAssignment assignment)
             {
                 Debug.Log("Response " + assignment.Status);
-                FindFirstObjectByType<TMP_Text>()?.SetText("Response " + assignment.Status);
+               statusText.SetText("Response " + assignment.Status);
                 switch (assignment.Status)
                 {
                     case MultiplayAssignment.StatusOptions.Found:

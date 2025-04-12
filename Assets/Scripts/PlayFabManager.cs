@@ -107,7 +107,7 @@ public class PlayFabManager : MonoBehaviour
         playFabId = result.PlayFabId;
         Debug.Log("PlayfabId " + playFabId);
         SceneManager.LoadScene("StartUp");
-        GetMoneyInAccount();
+       GetMoneyInAccount();
     }
 
     void OnError(PlayFabError error)
@@ -126,6 +126,7 @@ public class PlayFabManager : MonoBehaviour
     {
         int money = result.VirtualCurrency["MD"]; // MD is short MetaDoge that is Ser in PlayFab
 
+        Debug.Log("Money" + money);
         // assign Money here ;
     }
 

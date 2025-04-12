@@ -3,9 +3,7 @@ using UnityEngine;
 using Unity.Cinemachine;
 public class PlayerManager : NetworkBehaviour
 {
-    
-
-    private ulong playerId;
+     private ulong playerId;
 
      public CinemachineCamera cm;
     public override void OnNetworkSpawn()
@@ -28,9 +26,6 @@ public class PlayerManager : NetworkBehaviour
             return;
         }
 
-       
-
-        
         if (GameManager.Instance.IsMyTurn(playerId))
         {
             if (Input.GetKeyDown(KeyCode.S))
@@ -65,9 +60,7 @@ public class PlayerManager : NetworkBehaviour
 
     private void PullTrigger()
     {
-       
-            PullTriggerServerRpc();
-        
+        PullTriggerServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
