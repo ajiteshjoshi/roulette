@@ -14,15 +14,30 @@ public class PlayerSpawner : NetworkBehaviour
     {
         if (IsServer)
         {
-            SpawnPlayers();
+            StartCoroutine(WaitForPlayers());
         }
     }
 
-    
+    private IEnumerator WaitForPlayers()
+    {
+        Debug.Log("[Spawner] Waiting for players to connect...");
+
+        while (NetworkManager.Singleton.ConnectedClients.Count < 2)
+        {
+            Debug.Log($"[Spawner] Connected Clients: {NetworkManager.Singleton.ConnectedClients.Count}/{2}");
+            yield return new WaitForSeconds(1f);
+        }
+
+        Debug.Log("[Spawner] All expected players connected!");
+        SpawnPlayers();
+    }
+
     private void SpawnPlayers()
     {
         int playerCount = NetworkManager.Singleton.ConnectedClients.Count;
         float angleBetweenPlayers = 360f / playerCount;
+
+        Debug.Log("Player Count " + playerCount);
 
         foreach (var client in NetworkManager.Singleton.ConnectedClients)
         {

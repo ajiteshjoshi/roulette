@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
@@ -15,20 +16,38 @@ public class Server : MonoBehaviour
 {
     string _ticketId;
 
+
+    public float checkInterval = 1f; // Time interval to check for player connections
+    private MatchmakingResults payloadAllocation;
+    private bool allPlayersConnected = false;
+
     void Start()
     {
         DontDestroyOnLoad(gameObject);
         StartCoroutine(StartServer());
-        StartCoroutine(ApproveBackfillTicketEverySecond());
+        //StartCoroutine(ApproveBackfillTicketEverySecond());
     }
 
     async Awaitable StartServer()
     {
         await UnityServices.InitializeAsync();
+        if (NetworkManager.Singleton == null)
+        {
+            Debug.LogError("NetworkManager.Singleton is null!");
+            return;
+        }
         var server = MultiplayService.Instance.ServerConfig;
+
+
         var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+        if (transport == null)
+        {
+            Debug.LogError("UnityTransport component not found on NetworkManager!");
+            return;
+        }
         transport.SetConnectionData("0.0.0.0", server.Port);
         Debug.Log("Network Transport " + transport.ConnectionData.Address + ":" + transport.ConnectionData.Port);
+
 
         if (!NetworkManager.Singleton.StartServer())
         {
@@ -38,8 +57,10 @@ public class Server : MonoBehaviour
 
         NetworkManager.Singleton.OnClientConnectedCallback += (clientId) => { Debug.Log("Client connected"); };
         NetworkManager.Singleton.OnServerStopped += (reason) => { Debug.Log("Server stopped"); };
-        NetworkManager.Singleton.SceneManager.LoadScene("Game", LoadSceneMode.Single);
+        NetworkManager.Singleton.SceneManager.LoadScene("LoadingScene", LoadSceneMode.Single);
         Debug.Log($"Started Server {transport.ConnectionData.Address}:{transport.ConnectionData.Port}");
+
+        await CheckPlayers();
 
         var callbacks = new MultiplayEventCallbacks();
         callbacks.Allocate += OnAllocate;
@@ -54,7 +75,67 @@ public class Server : MonoBehaviour
 
         // We must then subscribe.
         var events = await MultiplayService.Instance.SubscribeToServerEventsAsync(callbacks);
-        await CreateBackfillTicket();
+        //await CreateBackfillTicket();
+    }
+
+
+
+    async Task CheckPlayers()
+    {
+        // Fetch the payload allocation and get the players
+        payloadAllocation = await MultiplayService.Instance.GetPayloadAllocationFromJsonAs<MatchmakingResults>();
+        StartCoroutine(CheckPlayerConnections());
+    }
+
+    private IEnumerator CheckPlayerConnections()
+    {
+        while (!allPlayersConnected)
+        {
+            // Get the connected player list
+            var connectedPlayerList = NetworkManager.Singleton.ConnectedClientsList;
+
+            // Get all player IDs from the payload
+            var expectedPlayerIds = new List<ulong>();
+
+            foreach (var player in payloadAllocation.MatchProperties.Players)
+            {
+                if (ulong.TryParse(player.Id, out ulong id))
+                {
+                    expectedPlayerIds.Add(id);
+                }
+                else
+                {
+                    Debug.LogWarning($"Invalid player ID received in payload: {player.Id}");
+                }
+            }
+
+            // Get all connected player IDs
+            var connectedPlayerIds = connectedPlayerList.Select(c => c.ClientId).ToList();
+
+            // Check if all expected players are connected
+            if (expectedPlayerIds.All(id => connectedPlayerIds.Contains(id)))
+            {
+                allPlayersConnected = true;
+                OnAllPlayersConnected();
+                yield break; // Exit the coroutine once all players are connected
+            }
+
+            yield return new WaitForSeconds(checkInterval);
+        }
+    }
+
+    private void OnAllPlayersConnected()
+    {
+        Debug.Log("All players are connected. Triggering the next step...");
+        // Call the desired function once all players are connected
+        StartGame();
+    }
+
+    private void StartGame()
+    {
+        Debug.Log("Starting the game...");
+        NetworkManager.Singleton.SceneManager.LoadScene("Game", LoadSceneMode.Single);
+        // Add logic to start the game here
     }
 
     void OnSubscriptionStateChanged(MultiplayServerSubscriptionState obj)
