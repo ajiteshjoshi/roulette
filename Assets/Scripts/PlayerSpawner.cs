@@ -68,6 +68,8 @@ public class PlayerSpawner : NetworkBehaviour
             player.transform.LookAt(tableCenter);
             player.transform.rotation = Quaternion.Euler(0, player.transform.rotation.eulerAngles.y, 0);
         }
+
+        GameManager.Instance.InitializeGame();
     }
 }
 

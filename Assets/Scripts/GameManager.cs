@@ -32,12 +32,6 @@ public class GameManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (IsServer)
-        {
-            // Initialize the game when the first player joins
-            InitializeGame();
-        }
-
         // Listen for changes to the current player turn
         currentPlayerTurn.OnValueChanged += OnPlayerTurnChanged;
 
@@ -45,7 +39,7 @@ public class GameManager : NetworkBehaviour
         alivePlayers.OnListChanged += OnAlivePlayersChanged;
     }
 
-    private void InitializeGame()
+    public void InitializeGame()
     {
         // Add all connected players to the alive list
         foreach (var client in NetworkManager.Singleton.ConnectedClients)
