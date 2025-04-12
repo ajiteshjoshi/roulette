@@ -23,6 +23,7 @@ public class PlayerManager : NetworkBehaviour
 
         if (GameManager.Instance == null)
         {
+            Debug.Log("GM Null");
             return;
         }
 
@@ -35,6 +36,7 @@ public class PlayerManager : NetworkBehaviour
 
             if (Input.GetKeyDown(KeyCode.P))
             {
+                Debug.Log("P Pressed");
                 PullTrigger();
             }
         }
@@ -60,6 +62,7 @@ public class PlayerManager : NetworkBehaviour
 
     private void PullTrigger()
     {
+        Debug.Log("Trigger Pulled Client");
         PullTriggerServerRpc();
     }
 
